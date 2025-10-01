@@ -26,6 +26,7 @@ import Insurance_loan from './Pages/Insurance_loan'
 import Gold_loan from './Pages/Gold_loan'
 import Location from './Pages/Locations'
 import Carrier_form from './Pages/Carriers_form'
+import Register from './Components/Registration'
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -39,6 +40,7 @@ function App() {
       <Routes>
         <Route path="/" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode}/><Index  isDarkMode={isDarkMode}/></>} />
         <Route path="/login" element={<><Login  isDarkMode={isDarkMode}/></>} />
+        <Route path="/Register" element={<Register />} />
         <Route path="/Registration" element={<><Registration  isDarkMode={isDarkMode}/></>} />
         <Route path="/Support" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode}/><Contact_us  isDarkMode={isDarkMode}/></>} />
         <Route path="/About_us" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode}/><About_us  isDarkMode={isDarkMode}/></>} />

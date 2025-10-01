@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 import { FiMenu, FiX } from 'react-icons/fi';
-import Arrowup from '../assets/Icons/Arrow-up.svg';
-import ThemeToggle from './ThemeToggle';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -10,6 +8,7 @@ import famicons_call from '../assets/Icons/famicons_call.svg';
 import iconoir_mail_solid from '../assets/Icons/iconoir_mail-solid.svg';
 
 import Login from '../Components/Login_borrower'
+import Affiliate from '../Components/Login_affiliate'
 
 const menuItems = [
   {
@@ -51,36 +50,12 @@ const menuItems = [
   {
     label: 'Follow Us Online',
     dropdown: [
-      {
-        title: 'Facebook',
-        desc: 'Follow us on Facebook',
-        link: 'https://www.facebook.com/profile.php?id=61578687491185',
-      },
-      {
-        title: 'Instagram',
-        desc: 'Follow us on Instagram',
-        link: 'https://www.instagram.com/borrowly.in/',
-      },
-      {
-        title: 'X',
-        desc: 'Follow us on X',
-        link: 'https://x.com/BorrowlyIn',
-      },
-      {
-        title: 'WhatsApp',
-        desc: 'Follow us on WhatsApp',
-        link: 'https://wa.me/<YOUR_NUMBER>', // replace <YOUR_NUMBER> with your WhatsApp number
-      },
-      {
-        title: 'LinkedIn',
-        desc: 'Follow us on LinkedIn',
-        link: 'https://www.linkedin.com/in/borrowly-in-7b650b385/',
-      },
-      {
-        title: 'YouTube',
-        desc: 'Follow us on YouTube',
-        link: 'https://www.youtube.com/@borrowly',
-      },
+      { title: 'Facebook', desc: 'Follow us on Facebook', link: 'https://www.facebook.com/profile.php?id=61578687491185' },
+      { title: 'Instagram', desc: 'Follow us on Instagram', link: 'https://www.instagram.com/borrowly.in/' },
+      { title: 'X', desc: 'Follow us on X', link: 'https://x.com/BorrowlyIn' },
+      { title: 'WhatsApp', desc: 'Follow us on WhatsApp', link: 'https://wa.me/<YOUR_NUMBER>' },
+      { title: 'LinkedIn', desc: 'Follow us on LinkedIn', link: 'https://www.linkedin.com/in/borrowly-in-7b650b385/' },
+      { title: 'YouTube', desc: 'Follow us on YouTube', link: 'https://www.youtube.com/@borrowly' },
     ],
   },
 ];
@@ -102,13 +77,17 @@ const mobileSubVariants = {
 };
 
 const Header = () => {
-  const [openDropdown, setOpenDropdown] = useState(null); // desktop hover
+  const [openDropdown, setOpenDropdown] = useState(null); 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [expandedSection, setExpandedSection] = useState(null); // mobile: which top-level is expanded
+  const [expandedSection, setExpandedSection] = useState(null); 
   const drawerRef = useRef(null);
 
   const navigate = useNavigate();
   const location = useLocation();
+
+ const [isOpen, setisOpen] = useState(false);          // Borrower login modal
+const [isAffiliateOpen, setIsAffiliateOpen] = useState(false); // Affiliate login modal
+
 
   // lock scroll when mobile drawer is open
   useEffect(() => {
@@ -129,9 +108,22 @@ const Header = () => {
     return () => document.removeEventListener('keydown', onKey);
   }, []);
 
+  // body scroll lock for modal
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen]);
+
+  const togglefunction=()=> setisOpen(false);
+
   const msg = 'Get 15% off on loan processing charges when you apply through Borrowly. Use code: FREEDOM15 | Valid till 31st August';
 
-  // Handle link click: external opens in new tab, internal navigates
   const handleLinkClick = (link) => {
     if (link.startsWith('http')) window.open(link, '_blank');
     else { navigate(link); window.scrollTo(0, 0); }
@@ -140,23 +132,6 @@ const Header = () => {
     setOpenDropdown(null);
   };
 
-  const [isOpen,setisOpen]=useState(false)
-
-  useEffect(() => {
-  if (isOpen) {
-    document.body.style.overflow = "hidden";
-  } else {
-    document.body.style.overflow = "auto"; // or "" to reset
-  }
-
-  return () => {
-    document.body.style.overflow = "auto";
-  };
-}, [isOpen]);
-
-  const togglefunction=()=>{
-    setisOpen(false)
-  }
   return (
     <>
       <style>{` @keyframes ticker { 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-50%,0,0)} }`}</style>
@@ -183,6 +158,7 @@ const Header = () => {
           />
         </div>
 
+        {/* Desktop Menu */}
         <div className="w-full items-center justify-end hidden md:flex">
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center space-x-1">
@@ -197,11 +173,26 @@ const Header = () => {
               <a href="mailto:Support@Borrowly.in">Support@Borrowly.in</a>
             </div>
           </div>
-          <div className='pl-5'>
-            <button onClick={()=>{setisOpen(true)}} className='border cursor-pointer hover:bg-[#0156C7] hover:text-white border-[#0156C7] text-[#0156C7] text-sm py-1 px-4 rounded-sm'>Sign In</button>
-          </div>
+         <div className='pl-5'>
+  <button 
+    onClick={() => setisOpen(true)} 
+    className='border cursor-pointer hover:bg-[#0156C7] hover:text-white border-[#0156C7] text-[#0156C7] text-sm py-1 px-4 rounded-sm'
+  >
+    Sign In
+  </button>
+</div>
+<div className='pl-5'>
+  <button 
+    onClick={() => setIsAffiliateOpen(true)} 
+    className='border cursor-pointer hover:bg-[#0156C7] hover:text-white border-[#0156C7] text-[#0156C7] text-sm py-1 px-4 rounded-sm'
+  >
+    Affiliate Login
+  </button>
+</div>
+
         </div>
 
+        {/* Mobile Menu Button */}
         <button
           aria-label="Open menu"
           className="md:hidden inline-flex items-center justify-center mt-2 p-2 rounded-lg border border-[#e5e5e5]"
@@ -209,60 +200,6 @@ const Header = () => {
         >
           <FiMenu className="w-6 h-6" />
         </button>
-      </div>
-
-      {/* Header bar */}
-      <div className="cursor-default sticky top-0 bg-white border border-t-0 border-l-0 border-r-0 pb-2 md:pb-0 border-b-[#d4d4d4] md:border-b-0 z-40 w-full">
-        <div className="px-3 bg-[#003478] hidden md:flex h-[45px] mx-auto justify-between items-center">
-          <div className="w-fit mx-auto hidden md:flex flex-row">
-            <ul
-              style={{ fontFamily: 'PovetaracSansBold' }}
-              className="flex text-[#111111] justify-left items-center gap-10 relative"
-            >
-              {menuItems.map(({ label, dropdown }) => (
-                <li
-                  key={label}
-                  className="text-[16px] py-4 cursor-pointer text-white flex items-center gap-2 relative"
-                  onMouseEnter={() => setOpenDropdown(label)}
-                  onMouseLeave={() => setOpenDropdown(null)}
-                >
-                  <span>{label}</span>
-                  <FaChevronDown
-                    className={`w-3 h-3 stroke-[1.5] transition-transform duration-300 ${
-                      openDropdown === label ? 'rotate-180' : 'rotate-0'
-                    }`}
-                  />
-
-                  <AnimatePresence>
-                    {openDropdown === label && (
-                      <motion.ul
-                        initial="hidden"
-                        animate="visible"
-                        exit="hidden"
-                        variants={dropdownVariants}
-                        className="absolute top-full left-0 text-[16px] z-50 bg-white dark:bg-[#1a1a1a] overflow-hidden rounded-lg shadow-lg w-80 border border-[#ebf0f5] text-black dark:text-white font-normal"
-                        style={{ fontFamily: 'PovetaracSansBold' }}
-                      >
-                        {dropdown.map(({ title, desc, link }) => (
-                          <li
-                            key={title}
-                            className="group px-4 py-3 cursor-pointer hover:bg-[#00C2CC] hover:text-white"
-                            onClick={() => handleLinkClick(link)}
-                          >
-                            {title}
-                            <p className="text-[14px] text-[#707070] dark:text-gray-400 group-hover:text-white">
-                              {desc}
-                            </p>
-                          </li>
-                        ))}
-                      </motion.ul>
-                    )}
-                  </AnimatePresence>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
       </div>
 
       {/* ===== Mobile Drawer & Overlay ===== */}
@@ -354,30 +291,46 @@ const Header = () => {
                 <button
                   style={{ fontFamily: 'PovetaracSansBlack' }}
                   className="flex-1 py-2.5 rounded-lg w-full border border-[#CCCCCC] text-[16px]"
-                  onClick={() => { navigate('/Contact_us'); setMobileOpen(false); }}
+                  onClick={() => { setMobileOpen(false); navigate('/Contact_us'); }}
                 >
                   Contact
                 </button>
-                <button
-                  style={{ fontFamily: 'PovetaracSansBlack' }}
-                  className="flex-1 py-2.5 rounded-lg w-full border border-[#CCCCCC] text-[16px]"
-                  onClick={() => {setMobileOpen(false);setisOpen(true)}}
-                >
-                  Sign In
-                </button>
+               <button
+  style={{ fontFamily: 'PovetaracSansBlack' }}
+  className="flex-1 py-2.5 rounded-lg w-full border border-[#CCCCCC] text-[16px]"
+  onClick={() => { setMobileOpen(false); setisOpen(true); }}
+>
+  Sign In
+</button>
+<button
+  style={{ fontFamily: 'PovetaracSansBlack' }}
+  className="flex-1 py-2.5 rounded-lg w-full border border-[#CCCCCC] text-[16px]"
+  onClick={() => { setMobileOpen(false); setIsAffiliateOpen(true); }}
+>
+  Affiliate Login
+</button>
+
               </div>
 
             </motion.aside>
           </>
         )}
       </AnimatePresence>
-       {
-         isOpen &&  <div onClick={()=>{setisOpen(false)}} className="absolute p-3 top-0 w-full min-h-screen flex items-center justify-center  bg-black/40 z-50">
-               <Login togglefunction={togglefunction}/>
-            </div>
-       }
-       
-     
+
+    {/* Borrower Login Modal */}
+{isOpen && (
+  <div onClick={() => setisOpen(false)} className="absolute p-3 top-0 w-full min-h-screen flex items-center justify-center bg-black/40 z-50">
+    <Login togglefunction={() => setisOpen(false)} />
+  </div>
+)}
+
+{/* Affiliate Login Modal */}
+{isAffiliateOpen && (
+  <div onClick={() => setIsAffiliateOpen(false)} className="absolute p-3 top-0 w-full min-h-screen flex items-center justify-center bg-black/40 z-50">
+    <Affiliate togglefunction={() => setIsAffiliateOpen(false)} />
+  </div>
+)}
+
     </>
   );
 };
