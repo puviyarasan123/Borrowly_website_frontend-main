@@ -28,6 +28,8 @@ import Location from './Pages/Locations'
 import Carrier_form from './Pages/Carriers_form'
 import Register from './Components/Registration'
 
+import PersonalLoan_Index from './Pages/PersonalLoan/PersonalLoan_Index'
+
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -67,6 +69,9 @@ function App() {
         <Route path="/Blogs" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode}/><BlogPage isDarkMode={isDarkMode}/></>} />
         <Route path="/Guides" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode}/><GuidesPage isDarkMode={isDarkMode}/></>} />
         <Route path="/Guides/:tab" element={ <><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} /><GuideSubPage isDarkMode={isDarkMode} /></>}/>
+    
+        <Route path="/PersonalLoan_Index" element={ <><PersonalLoan_Index/></>}/>
+  
       </Routes>
     </Router>
   )

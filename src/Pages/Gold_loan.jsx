@@ -8,7 +8,7 @@ import EmiCalculator from '../Components/Section_4';
 import Section_11 from "../Components/Section_11";
 import Footer_New from "../Components/Footer_New";
 import Footer_subscribe from "../Components/Footer_subscribe";
-import Gold_loan from '../assets/Images/Goldloanimage.avif';
+import Gold_loan from '../assets/Images/GoldloanBanner.avif';
 import Check_1_1 from '../assets/Images/check_1_.avif';
 import Check_2_1 from '../assets/Images/check_2_.avif';
 import Featurn from '../assets/Images/Featurn_5.avif';

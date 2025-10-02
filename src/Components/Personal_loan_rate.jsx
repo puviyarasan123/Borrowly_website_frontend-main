@@ -72,31 +72,31 @@ export default function PersonalLoanPage() {
 
         {/* RIGHT PANEL */}
         <div className="lg:w-[30%] w-full">
-          <div className="bg-[#F7F9FB] rounded-xl p-5">
-            <h2 className="text-lg font-semibold mb-5 text-center text-black">
-              Find Trusted Personal Loan Lenders
+          <div className="bg-[#F2F4FB] rounded-xl p-5">
+            <h2 className="text-[16px] font-semibold mb-5 text-center text-black">
+              Find Trusted Personal <br/>Loan Lenders
             </h2>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-3 justify-items-center">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-3 justify-items-center">
               {lenders.map((lender, idx) => (
                 <div
                   key={idx}
-                  className="w-20 h-20 bg-white flex items-center justify-center rounded-lg border border-gray-200 shadow-sm"
+                  className="w-18 h-18 bg-white flex items-center justify-center rounded-lg border border-gray-200 shadow-sm"
                 >
                   <img
                     src={lender.logo}
                     alt={lender.name}
-                    className="w-10 h-10 object-contain"
+                    className="w-6 h-6 object-contain"
                   />
                 </div>
               ))}
             </div>
 
-            <div className="mt-4 text-center">
+            {/* <div className="mt-4 text-center">
               <button className="text-[#0066CC] text-sm font-medium hover:underline">
                 View all →
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

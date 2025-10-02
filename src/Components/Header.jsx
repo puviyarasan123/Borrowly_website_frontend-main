@@ -181,7 +181,7 @@ const [isAffiliateOpen, setIsAffiliateOpen] = useState(false); // Affiliate logi
     Sign In
   </button>
 </div>
-<div className='pl-5'>
+<div className='pl-2'>
   <button 
     onClick={() => setIsAffiliateOpen(true)} 
     className='border cursor-pointer hover:bg-[#0156C7] hover:text-white border-[#0156C7] text-[#0156C7] text-sm py-1 px-4 rounded-sm'
@@ -202,6 +202,61 @@ const [isAffiliateOpen, setIsAffiliateOpen] = useState(false); // Affiliate logi
         </button>
       </div>
 
+
+{/* Header bar */}
+      <div className="cursor-default sticky top-0 bg-white border border-t-0 border-l-0 border-r-0 pb-2 md:pb-0 border-b-[#d4d4d4] md:border-b-0 z-40 w-full">
+        <div className="px-3 bg-[#003478] hidden md:flex h-[45px] mx-auto justify-between items-center">
+          <div className="w-fit mx-auto hidden md:flex flex-row">
+            <ul
+              style={{ fontFamily: 'PovetaracSansBold' }}
+              className="flex text-[#111111] justify-left items-center gap-10 relative"
+            >
+              {menuItems.map(({ label, dropdown }) => (
+                <li
+                  key={label}
+                  className="text-[16px] py-4 cursor-pointer text-white flex items-center gap-2 relative"
+                  onMouseEnter={() => setOpenDropdown(label)}
+                  onMouseLeave={() => setOpenDropdown(null)}
+                >
+                  <span>{label}</span>
+                  <FaChevronDown
+                    className={`w-3 h-3 stroke-[1.5] transition-transform duration-300 ${
+                      openDropdown === label ? 'rotate-180' : 'rotate-0'
+                    }`}
+                  />
+
+                  <AnimatePresence>
+                    {openDropdown === label && (
+                      <motion.ul
+                        initial="hidden"
+                        animate="visible"
+                        exit="hidden"
+                        variants={dropdownVariants}
+                        className="absolute top-full left-0 text-[16px] z-50 bg-white dark:bg-[#1a1a1a] overflow-hidden rounded-lg shadow-lg w-80 border border-[#ebf0f5] text-black dark:text-white font-normal"
+                        style={{ fontFamily: 'PovetaracSansBold' }}
+                      >
+                        {dropdown.map(({ title, desc, link }) => (
+                          <li
+                            key={title}
+                            className="group px-4 py-3 cursor-pointer hover:bg-[#00C2CC] hover:text-white"
+                            onClick={() => handleLinkClick(link)}
+                          >
+                            {title}
+                            <p className="text-[14px] text-[#707070] dark:text-gray-400 group-hover:text-white">
+                              {desc}
+                            </p>
+                          </li>
+                        ))}
+                      </motion.ul>
+                    )}
+                  </AnimatePresence>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+      
       {/* ===== Mobile Drawer & Overlay ===== */}
       <AnimatePresence>
         {mobileOpen && (

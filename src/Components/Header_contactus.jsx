@@ -22,7 +22,7 @@ const Header_contactus = () => {
       <motion.div
         variants={container}
         initial="hidden"
-        animate="show"          // 👈 run on first render
+        animate="show"         
       >
         {/* Title */}
         <motion.h1

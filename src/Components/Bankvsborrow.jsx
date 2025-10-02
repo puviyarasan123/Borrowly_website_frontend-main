@@ -30,35 +30,41 @@ export default function ComparisonTable() {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center bg-white px-4 py-10 lg:py-6">
-      {/* Small heading */}
-      <span className="px-4 py-1 text-sm rounded-full bg-blue-100 text-blue-600 font-medium">
-        Comparison Table
-      </span>
+    <div  style={{ fontFamily: "PovetaracSansBold" }} className="flex flex-col items-center justify-center bg-white px-4 py-10 lg:py-6">
+      <p
+          style={{ fontFamily: "PovetaracSansBold" }}
+          className="text-[#084DB3] text-[14px] bg-[#DEE8F6] text-left rounded-full w-fit px-4 py-1.5"
+        >
+          Comparison Table
+        </p>
 
-      {/* Title */}
-      <h1 className="text-2xl font-bold text-gray-800 mb-2 lg:mb-1">
-        Borrowly vs Banks
-      </h1>
+        <h1
+          style={{ fontFamily: "PovetaracSansBlack" }}
+          className="text-center mt-4 text-[28px] lg:text-[36px] xl:text-[40px] leading-[1.1] text-black"
+        >
+          Borrowly vs Banks
+        </h1>
 
-      {/* Subtitle */}
-      <p className="text-gray-500 text-center max-w-xl mb-8 lg:mb-5">
-        See how Borrowly stacks up against traditional banks when it comes to
-        speed, documents, costs, and flexibility.
-      </p>
+        <p
+          style={{ fontFamily: "PovetaracSansBold" }}
+          className="mt-2 px-4 w-full max-w-[800px] text-[14px] text-center lg:text-[14px] xl:text-lg text-[#696868]"
+        >
+          See how Borrowly stacks up against traditional banks when it comes to
+          speed, documents, costs, and flexibility.
+        </p>
 
       {/* Desktop Table */}
-      <div className="hidden md:block w-full max-w-5xl overflow-hidden rounded-2xl shadow-md border border-gray-200">
+      <div  style={{ fontFamily: "PovetaracSansBold" }}  className="hidden mt-10 md:block w-full max-w-screen-xl overflow-hidden rounded-2xl border border-[#D0DAFF]">
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr>
-              <th className="bg-cyan-600 text-white p-4 text-left rounded-tl-2xl border-r border-white">
+              <th className="bg-cyan-600 text-white p-5 text-left rounded-tl-2xl border-r border-white">
                 Feature
               </th>
-              <th className="bg-cyan-600 text-white p-4 text-left border-r border-white">
+              <th className="bg-cyan-600 text-white p-5 text-left border-r border-white">
                 Borrowly
               </th>
-              <th className="bg-cyan-600 text-white p-4 text-left rounded-tr-2xl">
+              <th className="bg-cyan-600 text-white p-5 text-left rounded-tr-2xl">
                 Banks
               </th>
             </tr>
@@ -66,13 +72,13 @@ export default function ComparisonTable() {
           <tbody>
             {data.map((row, idx) => (
               <tr key={idx}>
-                <td className="p-4 font-bold text-blue-600 border-r border-gray-200">
+                <td className="p-5 font-bold text-blue-600 border-r border-gray-200">
                   {row.feature}
                 </td>
-                <td className="p-4 font-bold text-black border-r border-gray-200">
+                <td className="p-5 font-bold text-black border-r border-gray-200">
                   {row.borrowly}
                 </td>
-                <td className="p-4 font-bold text-black">{row.banks}</td>
+                <td className="p-5 font-bold text-black">{row.banks}</td>
               </tr>
             ))}
           </tbody>

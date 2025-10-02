@@ -62,13 +62,13 @@ export default function CareerForm() {
       <div className="w-full max-w-md">
         {/* Careers badge */}
         <div className="flex justify-center mb-4">
-          <span className="px-4 py-1 border rounded-full text-sm text-gray-700">
+          <span style={{ fontFamily: 'PovetaracSansBold' }} className="px-4 py-1 border rounded-full text-sm text-gray-700">
             Careers
           </span>
         </div>
 
         {/* Heading */}
-        <h1 className="text-center text-xl font-medium text-gray-900 mb-8 leading-snug">
+        <h1 style={{ fontFamily: 'PovetaracSansblack' }} className="text-center text-xl font-medium text-gray-900 mb-8 leading-snug">
           Apply now and join us to make finance for <br />
           people, not paperwork.
         </h1>
@@ -79,45 +79,45 @@ export default function CareerForm() {
         >
           {/* First Name */}
           <div>
-            <label className="block mb-1 font-medium">First name</label>
+            <label style={{ fontFamily: 'PovetaracSansblack' }} className="block mb-2 font-medium">First name</label>
             <input
               type="text"
               name="firstName"
               value={formData.firstName}
               onChange={handleChange}
-              className="w-full rounded-md px-4 py-3 bg-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-600"
+              className="w-full rounded-md px-4 py-4 bg-[#F4F4F4] focus:outline-none focus:ring-2 focus:ring-teal-600"
             />
           </div>
 
           {/* Last Name */}
           <div>
-            <label className="block mb-1 font-medium">Last name</label>
+            <label style={{ fontFamily: 'PovetaracSansblack' }} className="block mb-2 font-medium">Last name</label>
             <input
               type="text"
               name="lastName"
               value={formData.lastName}
               onChange={handleChange}
-              className="w-full rounded-md px-4 py-3 bg-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-600"
+              className="w-full rounded-md px-4 py-4 bg-[#F4F4F4] focus:outline-none focus:ring-2 focus:ring-teal-600"
             />
           </div>
 
           {/* Email */}
           <div>
-            <label className="block mb-1 font-medium">Email</label>
+            <label style={{ fontFamily: 'PovetaracSansblack' }} className="block mb-2 font-medium">Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full rounded-md px-4 py-3 bg-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-600"
+              className="w-full rounded-md px-4 py-4 bg-[#F4F4F4] focus:outline-none focus:ring-2 focus:ring-teal-600"
             />
           </div>
 
           {/* Phone */}
           <div>
-            <label className="block mb-1 font-medium">Phone number</label>
+            <label style={{ fontFamily: 'PovetaracSansblack' }} className="block mb-2 font-medium">Phone number</label>
             <div className="flex">
-              <span className="px-4 py-3 rounded-l-md bg-gray-100 text-gray-700 text-sm mr-1">
+              <span className="px-4 py-4 rounded-l-md bg-gray-100 text-gray-700 text-sm mr-1">
                 +91
               </span>
               <input
@@ -125,15 +125,15 @@ export default function CareerForm() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full rounded-md px-4 py-3 bg-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-600"
+                className="w-full rounded-md px-4 py-4 bg-[#F4F4F4] focus:outline-none focus:ring-2 focus:ring-teal-600"
               />
             </div>
           </div>
 
           {/* Upload CV */}
           <div>
-            <label className="block mb-1 font-medium">Upload your CV</label>
-            <div className="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
+            <label style={{ fontFamily: 'PovetaracSansblack' }} className="block mb-2 font-medium">Upload your CV</label>
+            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center">
               <input
                 type="file"
                 name="cv"
@@ -149,7 +149,7 @@ export default function CareerForm() {
 
               <label
                 htmlFor="cv-upload"
-                className="cursor-pointer px-5 py-2 bg-gray-200 rounded-md text-gray-700 text-sm mt-3 inline-block"
+                className="cursor-pointer px-5 py-2 bg-[#E7E7E7] rounded-md text-gray-700 text-sm mt-3 inline-block"
               >
                 Browse files
               </label>
@@ -161,7 +161,7 @@ export default function CareerForm() {
 
           {/* Assistance */}
           <div>
-            <label className="block mb-1 font-medium">
+            <label style={{ fontFamily: 'PovetaracSansblack' }} className="block mb-1 font-medium">
               Do you require special assistance? (optional)
             </label>
             <input
@@ -169,12 +169,12 @@ export default function CareerForm() {
               name="assistance"
               value={formData.assistance}
               onChange={handleChange}
-              className="w-full rounded-md px-3 py-3 bg-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full rounded-md px-3 py-4 bg-[#F4F4F4] focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
           </div>
 
           {/* Privacy */}
-          <div className="flex items-start space-x-2 text-xs text-gray-600">
+          <div style={{ fontFamily: 'PovetaracSansbold' }} className="flex items-start space-x-2 text-xs text-gray-600">
             <input
               type="checkbox"
               name="privacy"

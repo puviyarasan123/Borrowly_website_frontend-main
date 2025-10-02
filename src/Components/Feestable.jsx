@@ -28,32 +28,45 @@ const TransparentFees = () => {
   return (
     <div className="flex flex-col items-center py-12 px-4 bg-white">
       {/* Header Section */}
-      <div className="text-center mb-8">
-        <span className="px-4 py-1 text-sm rounded-full bg-blue-100 text-blue-600 font-medium">
+       <p
+          style={{ fontFamily: "PovetaracSansBold" }}
+          className="text-[#084DB3] text-[14px] bg-[#DEE8F6] text-left rounded-full w-fit px-4 py-1.5"
+        >
           Fees & Charges
-        </span>
-        <h2 className="text-2xl font-bold mt-4 mb-2">Transparent Fees</h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+        </p>
+
+        <h1
+          style={{ fontFamily: "PovetaracSansBlack" }}
+          className="text-center mt-4 text-[28px] lg:text-[36px] xl:text-[40px] leading-[1.1] text-black"
+        >
+          Transparent Fees
+        </h1>
+
+        <p
+          style={{ fontFamily: "PovetaracSansBold" }}
+          className="mt-2 px-4 w-full max-w-[800px] text-[14px] text-center lg:text-[14px] xl:text-lg text-[#696868]"
+        >
           See how Borrowly stacks up against traditional banks when it comes to
           speed, documents, costs, and flexibility.
         </p>
-      </div>
+
+      
 
       {/* Table for Desktop */}
-      <div className="hidden md:block w-full max-w-5xl overflow-x-auto">
-        <table className="w-full border-2 border-blue-700 rounded-2xl shadow-md overflow-hidden text-left">
-          <thead className="bg-gray-50">
+      <div className="hidden md:block w-full mt-8 max-w-screen-xl overflow-x-auto">
+        <table className="w-full border-2 border-blue-700 rounded-2xl  overflow-hidden text-left">
+          <thead className="bg-[#F2F4FB]">
             <tr>
-              <th className="px-6 py-3 font-semibold text-gray-700 border-r border-gray-200">
+              <th className="px-6 py-3 font-semibold text-gray-700 border border-[#D0DAFF]">
                 Loan Amount
               </th>
-              <th className="px-6 py-3 font-semibold text-gray-700 border-r border-gray-200">
+              <th className="px-6 py-3 font-semibold text-gray-700 border border-[#D0DAFF]">
                 Processing Fee
               </th>
-              <th className="px-6 py-3 font-semibold text-gray-700 border-r border-gray-200">
+              <th className="px-6 py-3 font-semibold text-gray-700 border border-[#D0DAFF]">
                 Disbursement Fee
               </th>
-              <th className="px-6 py-3 font-semibold text-gray-700 border-r border-gray-200">
+              <th className="px-6 py-3 font-semibold text-gray-700 border border-[#D0DAFF]">
                 Interest Rate
               </th>
               <th className="px-6 py-3 font-semibold text-gray-700">
@@ -64,19 +77,19 @@ const TransparentFees = () => {
           <tbody>
             {feesData.map((fee, index) => (
               <tr key={index}>
-                <td className="px-6 py-4 font-bold text-blue-700 border-r border-gray-200">
+                <td className="px-6 py-4 font-bold text-blue-700 border border-[#D0DAFF]">
                   {fee.amount}
                 </td>
-                <td className="px-6 py-4 font-bold text-black border-r border-gray-200">
+                <td className="px-6 py-4 font-bold text-black border border-[#D0DAFF]">
                   {fee.processing}
                 </td>
-                <td className="px-6 py-4 font-bold text-black border-r border-gray-200">
+                <td className="px-6 py-4 font-bold text-black border border-[#D0DAFF]">
                   {fee.disbursement}
                 </td>
-                <td className="px-6 py-4 font-bold text-black border-r border-gray-200">
+                <td className="px-6 py-4 font-bold text-black border border-[#D0DAFF]">
                   {fee.interest}
                 </td>
-                <td className="px-6 py-4 font-bold text-black">{fee.late}</td>
+                <td className="px-6 py-4 font-bold text-black border border-[#D0DAFF]">{fee.late}</td>
               </tr>
             ))}
           </tbody>
