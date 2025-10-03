@@ -137,6 +137,25 @@ const schema = z
   });
 
 const PersonalLoan_Index = () => {
+const {register,handleSubmit,setValue,watch,getValues,trigger,formState: { errors, isValid, isDirty }} = useForm({
+    resolver: zodResolver(schema),
+      defaultValues: {
+      mobile: '',
+      fullName: '',
+      currentCompany: '',
+      residenceCity: '',
+      grossAnnualIncome: '',
+      employmentType: '',
+      CurrentBusinessVintage: '',
+      ProfessionalType: '',
+      BusinessresidenceCity: '',
+      BusinessgrossAnnualIncome: '',
+      BusinessDesiredLoanAmount: '',
+      pledgeAssets: 'no',
+    },
+    mode: 'onChange',
+  });
+
   const [loading, setLoading] = useState(false);
   const [stage, setStage] = useState(1); 
   const mobileRef = useRef(null);
@@ -178,24 +197,7 @@ const PersonalLoan_Index = () => {
    };
    
 
-  const {register,handleSubmit,setValue,watch,getValues,trigger,formState: { errors, isValid, isDirty }} = useForm({
-    resolver: zodResolver(schema),
-      defaultValues: {
-      mobile: '',
-      fullName: '',
-      currentCompany: '',
-      residenceCity: '',
-      grossAnnualIncome: '',
-      employmentType: '',
-      CurrentBusinessVintage: '',
-      ProfessionalType: '',
-      BusinessresidenceCity: '',
-      BusinessgrossAnnualIncome: '',
-      BusinessDesiredLoanAmount: '',
-      pledgeAssets: 'no',
-    },
-    mode: 'onChange',
-  });
+  
 
    useEffect(() => {
      if (mobileRef.current) mobileRef.current.focus();
