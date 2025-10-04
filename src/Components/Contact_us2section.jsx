@@ -5,7 +5,7 @@ import img1 from "../assets/Icons/contact-banner.svg";
 import SaveIcon from "../assets/Icons/SaveIcon.svg";
 
 import {ApiBaseUrl} from '../../apiservice'
-const BASE_URL = ApiBaseUrl()
+
 
 // Animations
 const fadeUp = {
@@ -62,7 +62,7 @@ export default function ContactUs() {
       };
 
       await axios.post(
-        `${BASE_URL}/api/contact-us/`,
+        `${ApiBaseUrl}/api/contact-us/`,
         payload
       );
 

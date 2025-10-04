@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CIBIL_Home_image from "../assets/Images/CIBIL_Home_image_new.avif";
 
 import {ApiBaseUrl} from '../../apiservice'
-const BASE_URL = ApiBaseUrl()
+
 
 const Footer_subscribe = () => {
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ const Footer_subscribe = () => {
       setLoading(true);
 
       await axios.post(
-        `${BASE_URL}/api/newsletter`,
+        `${ApiBaseUrl}/api/newsletter`,
         { email_address: email }
       );
 

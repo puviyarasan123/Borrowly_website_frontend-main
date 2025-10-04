@@ -4,14 +4,13 @@ import Section_2 from "../Components/Loan_section/Section_2";
 import Section_3 from "../Components/Loan_section/Section_3";
 import Section_4 from "../Components/Loan_section/Section_4";
 import ContactusBanner from '../Components/ContactusBanner';
-import EmiCalculator from '../Components/Section_4';
 import Section_11 from "../Components/Section_11";
 import Footer_New from "../Components/Footer_New";
 import Footer_subscribe from "../Components/Footer_subscribe";
-import Insurance from '../assets/Images/Insurance.avif';
 import Check_1_1 from '../assets/Images/check_1_.avif';
 import Check_2_1 from '../assets/Images/check_2_.avif';
 import Featurn from '../assets/Images/Featurn_6.avif';
+import Gold_loan from '../assets/Images/GoldloanBanner.avif';
 
 import img1 from '../assets/borrowly.avif/insuranceloan1.avif';
 import img2 from '../assets/Images/Person_loan_appscreen_2.avif';
@@ -20,8 +19,6 @@ import img3 from '../assets/borrowly.avif/insuranceloan2.avif';
 import Borrow from '../Components/Borrowbest';
 import Bank from '../Components/Bankvsborrow';
 import Fees from '../Components/Feestable';
-
-import Tick from '../assets/Icons/tick_Send.svg';
 import congrt from '../assets/Images/Congrt.avif';
 
 const InsuranceLoan = () => {
@@ -35,7 +32,7 @@ const InsuranceLoan = () => {
           title="From First Rides to Fleet Upgrades We Make It Easy"
           description="Protect What Matters Most – Your Life, Health, Assets & Vehicles
 Borrowly provides comprehensive insurance solutions with flexible plans, quick approvals, and easy claims. Get complete protection under one roof."
-          image={Insurance}
+          image={Gold_loan}
         />
       </div>
 

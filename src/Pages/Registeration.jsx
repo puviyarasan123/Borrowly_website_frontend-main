@@ -30,18 +30,18 @@ const registrationSchema = z.object({
       );
       return dobDate <= minAgeDate;
     }, { message: 'You must be at least 15 years old' }),
-  gender: z.enum(['Male', 'Female', 'Other'], 'Select a valid gender'),
-  country: z.string().min(1, 'Country is required'),
-  state: z.string().min(1, 'State is required'),
-  city: z.string().min(1, 'City is required'),
-  phone: z.string().min(10, 'Enter a valid phone number').max(15),
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  agreeTerms: z.literal(true, {
-    errorMap: () => ({ message: "You must agree to the Terms & Conditions and Privacy Policy" }),
-  }),
-});
-
+     gender: z.enum(['Male', 'Female', 'Other'], 'Select a valid gender'),
+     country: z.string().min(1, 'Country is required'),
+     state: z.string().min(1, 'State is required'),
+     city: z.string().min(1, 'City is required'),
+     phone: z.string().min(10, 'Enter a valid phone number').max(15),
+     email: z.string().email('Invalid email address'),
+     password: z.string().min(6, 'Password must be at least 6 characters'),
+     agreeTerms: z.literal(true, {
+       errorMap: () => ({ message: "You must agree to the Terms & Conditions and Privacy Policy" }),
+     }),
+   });
+   
 const extendedSchema = registrationSchema.extend({
   guideCode: z.string().optional(),
   promoCode: z.string().optional(),
