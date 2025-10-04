@@ -1,1 +1,1 @@
-export const ApiBaseUrl = "http://localhost:8080";
+export const ApiBaseUrl = "https://borrowly-backend-696063357505.europe-west1.run.app";

@@ -86,7 +86,7 @@ export default function AgentRegistrationWithSteps() {
       state: '',
       City: '',
       pincode: '',
-      Referred: '',
+      referred: '',
       
       panImage: null,
       aadharImage: null,
@@ -121,13 +121,16 @@ export default function AgentRegistrationWithSteps() {
   const regState = register('state');
   const regCity = register('City');
   const regPincode = register('pincode');
-  const regReferred = register('Referred');
+  const regReferred = register('referred');
 
   // watch files for previews
   const panFiles = watch("panImage");
   const aadharFiles = watch("aadharImage");
   const selfieFiles = watch("selfie");
-  const Referred = watch("Referred");
+  const Referred = watch("referred");
+
+  const Emailfield = watch("email");
+  const Mobilefield = watch("mobile");
 
   const [loader,setloader]=useState(false)
 
@@ -178,7 +181,7 @@ export default function AgentRegistrationWithSteps() {
   useEffect(() => {
     const callFileApi = async () => {
       try {
-        const res = await fetch(`${ApiBaseUrl}/agents/upload-kyc-docs`, {
+        const res = await fetch(`${ApiBaseUrl}/api/agents/upload-kyc-docs`, {
           method: "GET",
           headers: { "Accept": "application/json" },
         });
@@ -260,15 +263,35 @@ export default function AgentRegistrationWithSteps() {
   };
 
 
-      const handleBack = () => setActiveStep(s => Math.max(1, s - 1));
+       const handleBack = () => setActiveStep(s => Math.max(1, s - 1));
        const [referralVerified,setreferralverified]=useState(false)
+       const [referraledby,setreferraledby]=useState(null)
      
-       const handleVerify = () => {
-       const code = getValues('Referred');
-         if (code === "BORROWLY2025") {
-           setreferralverified(true)
-         } 
-       };
+       const handleVerify = async () => {
+       const code = getValues("referred")?.toUpperCase();
+
+       if (!code) {
+         alert("Please enter a referral code first!");
+         return;
+       }
+     
+       try {
+         const resp = await fetch(`${ApiBaseUrl}/api/agents/referral-codes/${code}`);
+         const data = await resp.json();
+     
+         if (resp.ok) {
+           setreferralverified(true);
+           setreferraledby(data.referrer?.name)
+         } else {
+           setreferralverified(false);
+           alert(data.message || "Invalid referral code");
+         }
+       } catch (error) {
+         console.error("Error verifying referral code:", error);
+         alert("Server error. Please try again later.");
+       }
+     };
+     
 
       // at component top
       const isUploadingRef = useRef(false);
@@ -289,28 +312,65 @@ export default function AgentRegistrationWithSteps() {
         setValue(uploadedFlagName, true);
       };
 
-
-      // updated handleNext
-const handleNext = async () => {
+  const [loginError, setLoginError] = useState("");
+  const handleNext = async () => {
+    console.log("handleNext clicked, activeStep:", activeStep);
   const fields = stepFieldMap[activeStep] || [];
   const ok = await trigger(fields);
   if (!ok) {
-    // focus first error
     const firstErrorField = Object.keys(errors)[0];
     const el = inputRefs.current?.[firstErrorField];
     if (el && typeof el.focus === "function") el.focus();
     return;
   }
 
-  // Prevent re-entrancy / double submit
   if (isUploadingRef.current) return;
   isUploadingRef.current = true;
 
   try {
+    if (activeStep === 1) {
+      setloader(true);
+      const emailToCheck = getValues("email");
+      const mobileToCheck = getValues("mobile");
+
+      const qs = new URLSearchParams({email: emailToCheck,mobile: mobileToCheck}).toString();
+      
+      const resp = await fetch(`${ApiBaseUrl}/api/agents/AgentExists?${qs}`, {
+        method: "GET",
+        headers: {
+          "Accept": "application/json"
+        },
+      });
+      
+      const rawText = await resp.text().catch(() => null);
+      let data;
+      try {
+        data = rawText ? JSON.parse(rawText) : null;
+      } catch (err) {
+        data = { exists: false };
+      }
+      setloader(false);
+      if (!resp.ok) {
+        
+        const msg = rawText || `HTTP ${resp.status}`;
+        throw new Error(`AgentExists failed: ${msg}`);
+      }
+
+      if (data && data.exists) {
+        setActiveStep(1);
+        setLoginError("Email or mobile number already exists.");
+        return;
+      }
+      
+    }
+
+    if (activeStep === 2) {
+      setActiveStep(3);
+    }
+
     if (activeStep === 3) {
       setloader(true);
-
-      // --- Aadhaar ---
+      // Aadhaar
       const aadharFileVal = getValues("aadharImage");
       let fileToUpload = null;
       if (!aadharFileVal) throw new Error("No Aadhaar file found in the form (aadharImage).");
@@ -322,8 +382,8 @@ const handleNext = async () => {
       const aadhaarSignedObj = signedUrls?.aadhaar;
       await ensureUpload(fileToUpload, aadhaarSignedObj, "aadharUploaded");
 
-      // --- PAN ---
-      const panFilesVal = watch("panImage");
+      // PAN
+      const panFilesVal = getValues("panImage");
       let panFileToUpload = null;
       if (!panFilesVal) throw new Error("No PAN file found in the form (panImage).");
       if (panFilesVal instanceof File) panFileToUpload = panFilesVal;
@@ -334,8 +394,8 @@ const handleNext = async () => {
       const panSignedObj = signedUrls?.pan;
       await ensureUpload(panFileToUpload, panSignedObj, "panUploaded");
 
-      // --- Selfie ---
-      const selfieFilesVal = watch("selfie");
+      // Selfie
+      const selfieFilesVal = getValues("selfie");
       let selfieFileToUpload = null;
       if (!selfieFilesVal) throw new Error("No selfie file found in the form (selfie).");
       if (selfieFilesVal instanceof File) selfieFileToUpload = selfieFilesVal;
@@ -347,22 +407,30 @@ const handleNext = async () => {
       await ensureUpload(selfieFileToUpload, selfieSignedObj, "selfieUploaded");
 
       setloader(false);
-    }
 
-    // advance step or submit
-    if (activeStep === steps.length) {
-      handleSubmit(onSubmitForm)();
-    } else {
+      // after uploads advance
       setActiveStep((s) => Math.min(s + 1, steps.length));
     }
-  } catch (uploadErr) {
+
+    // If there are other steps (1 -> just advance)
+    if (activeStep === 1) {
+      setActiveStep((s) => Math.min(s + 1, steps.length));
+    }
+
+    // If last step submit
+    if (activeStep === steps.length) {
+      handleSubmit(onSubmitForm)();
+    }
+  } catch (err) {
     setloader(false);
-    console.error("Upload error:", uploadErr);
-    alert(`Failed to upload: ${uploadErr.message || uploadErr}`);
+    console.error("handleNext error:", err);
+    alert(err.message || "An error occurred");
   } finally {
+    // ALWAYS release the lock
     isUploadingRef.current = false;
   }
 };
+
 
 // onSubmitForm - remains largely the same but ensure it doesn't attempt any uploads
 const onSubmitForm = async (data) => {
@@ -372,7 +440,7 @@ const onSubmitForm = async (data) => {
 
     const finalData = { ...rest, generatedUserId, Referred };
 
-    const response = await fetch(`${ApiBaseUrl}/agents/AgentRegister`, {
+    const response = await fetch(`${ApiBaseUrl}/api/agents/AgentRegister`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(finalData),
@@ -462,6 +530,7 @@ const onSubmitForm = async (data) => {
                   style={{ fontFamily: "PovetaracSansBold, sans-serif" }}
                   onFocus={() => setFocusedField('fullName')}
                   onBlur={() => !getValues('fullName') && setFocusedField('')}
+                 
                   className="w-full bg-transparent outline-none text-[18px]"
                   aria-invalid={errors.fullName ? 'true' : 'false'}
                 />
@@ -484,7 +553,8 @@ const onSubmitForm = async (data) => {
                   aria-label="Mobile number"
                   aria-invalid={errors.mobile ? 'true' : 'false'}
                   maxLength={10}
-                  onFocus={() => setFocusedField('mobile')}
+
+                  onFocus={() => {setFocusedField('mobile');setLoginError("")}}
                   onBlur={() => !getValues('mobile') && setFocusedField('')}
                   onInput={(e) => {
                     const el = e.currentTarget;
@@ -512,8 +582,9 @@ const onSubmitForm = async (data) => {
                   ref={attachRef(regEmail, 'email')}
                   type="text"
                   style={{ fontFamily: "PovetaracSansBold, sans-serif" }}
-                  onFocus={() => setFocusedField('email')}
+                  onFocus={() => {setFocusedField('email');setLoginError("")}}
                   onBlur={() => !getValues('email') && setFocusedField('')}
+                  
                   className="w-full bg-transparent outline-none text-[18px]"
                   aria-invalid={errors.email ? 'true' : 'false'}
                 />
@@ -553,6 +624,13 @@ const onSubmitForm = async (data) => {
                 </div>
               </div>
               {errors.password && <p className="text-xs text-red-600">{errors.password.message}</p>}
+
+              {/* display errors and info */}
+              {loginError && (
+                <div className="w-full bg-[#ffe4e2] border border-[#ffc8c5] rounded-lg flex items-center justify-center text-center mb-6">
+                  <p className="text-red-500 py-3 text-sm">{loginError}</p>
+                </div>
+              )}
 
               <div className="flex justify-end items-center mt-4">
                 <div className="flex items-end gap-2">
@@ -876,11 +954,11 @@ const onSubmitForm = async (data) => {
             </div>
 
             {
-              referralVerified == true && <p className="text-xs mt-2 text-green-600">Referred by Kiran kumar</p>
+              referralVerified == true && <p className="text-xs mt-2 text-green-600">Referred by {referraledby}</p>
             }
             
-            {errors.Referred && (
-              <p className="text-xs mt-2 text-red-600">{errors.Referred.message}</p>
+            {errors.referred && (
+              <p className="text-xs mt-2 text-red-600">{errors.referred.message}</p>
             )}
             
 

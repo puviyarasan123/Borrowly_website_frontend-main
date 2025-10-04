@@ -323,12 +323,18 @@ const AffiliateLogin = () => {
           </p>
         </div>
 
-        {/* display errors and info */}
-        {loginError && (
-          <div className="w-full bg-[#ffcac6] border border-[#ff8d85] rounded-lg flex items-center justify-center text-center mb-6 max-w-[450px]">
-            <p className="text-red-500 py-3 text-sm">{loginError}</p>
-          </div>
-        )}
+        {
+          loginError === "Your account is awaiting approval. Please contact support." ? (
+            <div className="w-full bg-[#fff4e5] border border-[#ffcc80] rounded-lg flex items-center justify-center text-center mb-6 max-w-[450px]">
+              <p className="text-[#b36b00] py-3 text-sm">{loginError}</p>
+            </div>
+          ) :  loginError && (
+            <div className="w-full bg-[#ffe5e5] border border-[#ffb3b3] rounded-lg flex items-center justify-center text-center mb-6 max-w-[450px]">
+              <p className="text-red-700 py-3 text-sm">{loginError}</p>
+            </div>
+          )
+        }
+
         {!loginError && infoMessage && (
           <div className="w-full bg-[#dff5e0] border border-[#b6e3b8] rounded-lg flex items-center justify-center text-center mb-6 max-w-[450px]">
             <p className="text-green-700 py-3 text-sm">{infoMessage}</p>
