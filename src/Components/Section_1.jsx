@@ -132,7 +132,7 @@ const Section_1 = ({ isDarkMode }) => {
     image: Loan_image_1,
     Normal_icon: Person_loan,
     id: 1,
-    link: '/Personal_loan',
+    link: '/PersonalLoan_index',
     headline: 'Smart Loan Choices, Trusted Support — Today and Always.',
     description: 'Need funds for something important? Whether it’s a personal milestone or an unexpected need, our loans are designed around you. At Borrowly, we go beyond approval — we build lasting trust. Let’s grow your financial confidence together.'
   },
@@ -142,7 +142,7 @@ const Section_1 = ({ isDarkMode }) => {
      image: Loan_image_3,
     Normal_icon: Home_Equity,
     id: 2,
-     link: '/Home_loan',
+     link: '/HomeLoan_index',
     headline: 'Turning Blueprints Into Reality — With Trust and Ease',
     description: 'At Borrowly, we believe a home loan is more than just financing — it’s the foundation of a future well-lived. Whether it’s your first home or your next big move, we make the process seamless with personalized support, transparent guidance, and rates that bring your dream home closer than ever.'
   },
@@ -152,7 +152,7 @@ const Section_1 = ({ isDarkMode }) => {
      image: Loan_image_6,
     Normal_icon: Business_Loan,
     id: 3,
-    link: '/Business_loan',
+    link: '/BusinessLoan_index',
     headline: 'For Every Leap You Take, We’re Right Behind You.',
     description: `Your business deserves more than just funding — it deserves a partner. At Borrowly, our business loans are built around your goals. Whether you're expanding operations, hiring talent, or investing in equipment, we provide tailored solutions, fast approvals, and relationship-driven support that grows with you.`
   },
@@ -172,7 +172,7 @@ const Section_1 = ({ isDarkMode }) => {
      image: Loan_image_4,
     Normal_icon:  Education_loan_icon,
     id: 5,
-     link: '/Education_loan',
+     link: '/EducationLoan_index',
     headline: 'Turning Study Abroad Plans Into Reality.',
     description: 'Studying overseas is a life-changing experience — we make it financially possible. At Borrowly, our Foreign Education Loans cover tuition, living costs, travel, and more, with fast approvals and expert guidance every step of the way. Start your global journey with us.'
   },
@@ -182,7 +182,7 @@ const Section_1 = ({ isDarkMode }) => {
     Normal_icon: Vechicle_loan,
      image: Loan_image_2,
     id: 6,
-     link: '/Vehicle_loan',
+     link: '/VehicleLoan_index',
     headline: 'From First Rides to Fleet Upgrades — We Make It Easy',
     description: 'Whether it’s your dream car, a two-wheeler for daily travel, or commercial vehicles to grow your business — Borrowly’s vehicle loans are tailored for speed, simplicity, and support. Enjoy competitive rates, flexible tenures, and a seamless experience from application to approval.'
   },
@@ -192,7 +192,7 @@ const Section_1 = ({ isDarkMode }) => {
      image: Loan_image_5,
     Normal_icon: Insurance,
     id: 7,
-    link: '/Insurance_loan',
+    link: '/Insurence_index',
     headline: 'From First Rides to Fleet Upgrades — We Make It Easy',
     description: 'Whether it’s your dream car, a two-wheeler for daily travel, or commercial vehicles to grow your business — Borrowly’s vehicle loans are tailored for speed, simplicity, and support. Enjoy competitive rates, flexible tenures, and a seamless experience from application to approval.'
   }

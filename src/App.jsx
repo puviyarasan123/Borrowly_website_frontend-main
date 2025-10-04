@@ -29,6 +29,11 @@ import Carrier_form from './Pages/Carriers_form'
 import Register from './Components/Registration'
 
 import PersonalLoan_Index from './Pages/PersonalLoan/PersonalLoan_Index'
+import BusinessLoan_Index from './Pages/BusinessLoan/BusinessLoan_index'
+import HomeLoan_Index from './Pages/HomeLoan/HomeLoan_index'
+import Insurence_Index from './Pages/InsurenceLoan/Insurence_index'
+import EducationLoan_index from './Pages/EducationLoan/EducationLoan_index'
+import VehicleLoan_index from './Pages/VehicleLoan/VehicleLoan_index'
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -71,7 +76,11 @@ function App() {
         <Route path="/Guides/:tab" element={ <><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} /><GuideSubPage isDarkMode={isDarkMode} /></>}/>
     
         <Route path="/PersonalLoan_Index" element={ <><PersonalLoan_Index/></>}/>
-  
+        <Route path="/BusinessLoan_Index" element={ <><BusinessLoan_Index/></>}/>
+        <Route path="/HomeLoan_Index" element={ <><HomeLoan_Index/></>}/>
+        <Route path="/Insurence_Index" element={ <><Insurence_Index/></>}/>
+        <Route path="/EducationLoan_Index" element={ <><EducationLoan_index/></>}/>
+        <Route path="/VehicleLoan_Index" element={ <><VehicleLoan_index/></>}/>
       </Routes>
     </Router>
   )
