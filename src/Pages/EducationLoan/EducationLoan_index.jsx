@@ -40,6 +40,15 @@ const educationLoanSchema = z
         permanentAddress: z.string().min(5, 'Permanent address required'),
         emergencyContact: z.string().regex(/^\d{10}$/, '10 digit emergency contact required'),
 
+        // New fields for Eligibility Check (Stage 2)
+        dob: z.string().min(1, 'Date of Birth required'),
+        nationality: z.string().min(2, 'Nationality required'),
+        countryOfStudy: z.string().min(2, 'Country of study required'),
+        universityCheck: z.string().min(3, 'University name required'),
+        courseType: z.string().min(1, 'Course Type required'),
+        admissionStatusCheck: z.string().min(1, 'Admission Status required'),
+        expectedLoanAmount: z.string().min(1, 'Loan amount required'),
+
         university: z.string().min(3, 'University name required'),
         courseName: z.string().min(2, 'Course name required'),
         courseDuration: z.string().min(1, 'Course duration required'),
@@ -55,7 +64,7 @@ const educationLoanSchema = z
         insurance: z.string().min(1, 'Insurance cost required'),
         booksEquipment: z.string().min(1, 'Books/Equipment cost required'),
         proposedRepaymentTenure: z.string().min(1, 'Tenure required'),
-        totalLoanRequired: z.string().optional(), 
+        totalLoanRequired: z.string().min(1, 'Total loan required'), 
         
         relationWithApplicant: z.string().min(1, 'Relation required'),
         coApplicantFullName: z.string().min(2, 'Co-Applicant name required'),
@@ -81,12 +90,12 @@ const educationLoanSchema = z
 // --- NEW STAGE FLOW DEFINITION ---
 const figmaStepFields = {
     1: ['mobile'],
-    2: [], // Eligibility Check (Visual, no validation)
-    3: ['studentFullName', 'passportNumber', 'panCard', 'aadharCard', 'email', 'currentAddress', 'permanentAddress', 'emergencyContact'],
+    2: ['studentFullName', 'dob', 'nationality', 'countryOfStudy', 'universityCheck', 'courseType', 'admissionStatusCheck', 'expectedLoanAmount'],
+    3: ['passportNumber', 'panCard', 'aadharCard', 'email', 'currentAddress', 'permanentAddress', 'emergencyContact'],
     4: ['university', 'courseName', 'courseDuration', 'admissionStatus', 'visaStatus', 'lastQualification', 'passedOutYear'],
     5: ['relationWithApplicant', 'coApplicantFullName', 'coApplicantPan', 'coApplicantAadhar', 'occupationType', 'monthlyIncome', 'annualIncome', 'coApplicantAddress', 'coApplicantContact'],
     6: ['studentPassportDoc', 'studentVisaDoc', 'admissionLetterDoc', 'feeStructureDoc', 'academicRecordsDoc', 'coApplicantPanDoc', 'coApplicantAadharDoc', 'incomeProofDoc'],
-    7: ['tuitionFees', 'livingExpenses', 'travelVisaExpenses', 'insurance', 'booksEquipment', 'proposedRepaymentTenure'],
+    7: ['tuitionFees', 'livingExpenses', 'travelVisaExpenses', 'insurance', 'booksEquipment', 'proposedRepaymentTenure', 'totalLoanRequired'],
 };
 
 const EducationLoan_Index = () => {
@@ -96,17 +105,6 @@ const EducationLoan_Index = () => {
         formState: { errors, isSubmitting },
     } = useForm({
         resolver: zodResolver(educationLoanSchema),
-        defaultValues: {
-            mobile: '', studentFullName: '', passportNumber: '', panCard: '', aadharCard: '', email: '',
-            currentAddress: '', permanentAddress: '', emergencyContact: '', university: '', courseName: '',
-            courseDuration: '', admissionStatus: null, visaStatus: '', lastQualification: '', passedOutYear: '',
-            tuitionFees: '0', livingExpenses: '0', travelVisaExpenses: '0', insurance: '0', booksEquipment: '0', 
-            proposedRepaymentTenure: '10 years', totalLoanRequired: '0',
-            relationWithApplicant: '', coApplicantFullName: '', coApplicantPan: '', coApplicantAadhar: '',
-            occupationType: '', monthlyIncome: '', annualIncome: '', coApplicantAddress: '', coApplicantContact: '',
-            studentPassportDoc: null, studentVisaDoc: null, admissionLetterDoc: null, feeStructureDoc: null, 
-            academicRecordsDoc: null, coApplicantPanDoc: null, coApplicantAadharDoc: null, incomeProofDoc: null,
-        },
         mode: 'onChange',
     });
 
@@ -118,6 +116,13 @@ const EducationLoan_Index = () => {
     // 3. REF DECLARATIONS (All unconditional refs must be here)
     const mobileRef = useRef(null);
     const studentFullNameRef = useRef(null);
+    const dobRef = useRef(null);
+    const nationalityRef = useRef(null);
+    const countryOfStudyRef = useRef(null);
+    const universityCheckRef = useRef(null);
+    const courseTypeRef = useRef(null);
+    const admissionStatusCheckRef = useRef(null);
+    const expectedLoanAmountRef = useRef(null);
     const currentAddressRef = useRef(null);
     const universityRef = useRef(null);
     const coApplicantNameRef = useRef(null);
@@ -139,6 +144,7 @@ const EducationLoan_Index = () => {
     const insuranceRef = useRef(null);
     const booksEquipmentRef = useRef(null);
     const proposedRepaymentTenureRef = useRef(null);
+    const totalLoanRequiredRef = useRef(null);
     const relationWithApplicantRef = useRef(null);
     const coApplicantPanRef = useRef(null);
     const coApplicantAadharRef = useRef(null);
@@ -181,12 +187,12 @@ const EducationLoan_Index = () => {
     // Autofocus effect
     useEffect(() => {
         if (stage === 1 && mobileRef.current) mobileRef.current.focus();
-        if (stage === 3 && studentFullNameRef.current) studentFullNameRef.current.focus();
+        if (stage === 2 && studentFullNameRef.current) studentFullNameRef.current.focus();
+        if (stage === 3 && passportNumberRef.current) passportNumberRef.current.focus();
         if (stage === 7) {
             document.getElementById('tuitionFees')?.focus();
-            calculateTotalLoan();
         }
-    }, [stage, calculateTotalLoan, studentFullNameRef]);
+    }, [stage]);
 
     // Currency calculation effect (Stabilized hook)
     useEffect(() => {
@@ -225,13 +231,6 @@ const EducationLoan_Index = () => {
     
     const onNext = async () => {
         let ok;
-        // Stage 2 (Eligibility check) is a static review, it doesn't need validation
-        if (stage === 2) {
-             setStage(3);
-             return;
-        }
-
-        // For all other stages, trigger validation for the fields in that stage
         ok = await trigger(figmaStepFields[stage]);
         
         if (!ok) {
@@ -239,7 +238,6 @@ const EducationLoan_Index = () => {
            return;
         }
         
-        // This is the final data entry screen, so we proceed directly to the final submit handler.
         if (stage === 7) {
             await handleSubmit(onFinalSubmit)();
         } else {
@@ -387,18 +385,18 @@ const EducationLoan_Index = () => {
                     {/* STAGE 1: Mobile Number (Figma 175) */}
                     {stage === 1 && (
                          <div className="w-full max-w-[500px]">
-                                                     <h1 style={{ fontFamily: 'PovetaracSansbold' }} className="text-lg">Unlock Exclusive Borrowly</h1>
-                                                     <h1 style={{ fontFamily: 'PovetaracSansBlack' }} className="text-3xl md:text-4xl mb-5">Education Loan Offers</h1>
-                                                     <div className="mt-4 flex flex-col gap-3">
-                                                         {benefits.map((item, index) => (
-                                                             <div key={index} className="flex gap-2">
-                                                                 <div><img src={tickdone} alt="tick" className="w-5" /></div>
-                                                                 <h1 style={{ fontFamily: 'PovetaracSansbold' }} className="text-sm flex-1 text-black">
-                                                                     {item}
-                                                                 </h1>
-                                                             </div>
-                                                         ))}
-                                                     </div>
+                                     <h1 style={{ fontFamily: 'PovetaracSansbold' }} className="text-lg">Unlock Exclusive Borrowly</h1>
+                                     <h1 style={{ fontFamily: 'PovetaracSansBlack' }} className="text-3xl md:text-4xl mb-5">Education Loan Offers</h1>
+                                     <div className="mt-4 flex flex-col gap-3">
+                                         {benefits.map((item, index) => (
+                                             <div key={index} className="flex gap-2">
+                                                 <div><img src={tickdone} alt="tick" className="w-5" /></div>
+                                                 <h1 style={{ fontFamily: 'PovetaracSansbold' }} className="text-sm flex-1 text-black">
+                                                     {item}
+                                                 </h1>
+                                             </div>
+                                         ))}
+                                     </div>
                             
                             <div className="py-5">
                                 <h1 style={{ fontFamily: 'PovetaracSansbold' }} className="text-[16px] mb-2">Phone Number</h1>
@@ -436,7 +434,7 @@ const EducationLoan_Index = () => {
                         </div>
                     )}
 
-                    {/* STAGE 2: Eligibility Check (Figma 177 - REVIEW SCREEN) */}
+                    {/* STAGE 2: Eligibility Check (Figma 177 - NOW WITH INPUTS) */}
                     {stage === 2 && (
                         <div className="w-full max-w-[500px] cursor-default">
                             <div className="mb-4 flex items-center w-fit gap-1 cursor-pointer" onClick={goToPreviousStage}>
@@ -449,14 +447,14 @@ const EducationLoan_Index = () => {
                                 Quick screening to confirm basic loan eligibility
                             </h1>
                             <div className="flex flex-col gap-3 w-full">
-                                {renderStaticField('Student Full Name', 'Rahul Sharma')}
-                                {renderStaticField('Date of Birth (DD-MM-YYYY)', '15-08-2002')}
-                                {renderStaticField('Nationality', 'Indian')}
-                                {renderStaticField('Country of study', 'United States')}
-                                {renderStaticField('University/College Name', 'University of California, Los Angeles')}
-                                {renderStaticField('Course Type', 'PG')}
-                                {renderStaticField('Admission Status', 'Provisional')}
-                                {renderStaticField('Expected Loan Amount', '35,00,000')}
+                                {renderInput('studentFullName', 'Student Full Name', 'text', 80, studentFullNameRef, errors.studentFullName)}
+                                {renderInput('dob', 'Date of Birth (DD-MM-YYYY)', 'text', 10, dobRef, errors.dob)}
+                                {renderInput('nationality', 'Nationality', 'text', 30, nationalityRef, errors.nationality)}
+                                {renderInput('countryOfStudy', 'Country of study', 'text', 50, countryOfStudyRef, errors.countryOfStudy)}
+                                {renderInput('universityCheck', 'University/College Name', 'text', 100, universityCheckRef, errors.universityCheck)}
+                                {renderInput('courseType', 'Course Type', 'text', 50, courseTypeRef, errors.courseType)}
+                                {renderInput('admissionStatusCheck', 'Admission Status', 'text', 50, admissionStatusCheckRef, errors.admissionStatusCheck)}
+                                {renderInput('expectedLoanAmount', 'Expected Loan Amount', 'text', 12, expectedLoanAmountRef, errors.expectedLoanAmount, true)}
                             </div>
                             <div className="w-full flex mt-5 mb-3">
                                 <button type="button" onClick={onNext} className="w-full max-w-[500px] cursor-pointer py-4 rounded-xl text-white bg-[#003880] font-medium text-sm disabled:opacity-60">
@@ -479,7 +477,6 @@ const EducationLoan_Index = () => {
                                 Capture student's identity and communication details
                             </h1>
                             <div className="flex flex-col gap-3 w-full">
-                                {renderInput('studentFullName', 'Student Full Name', 'text', 80, studentFullNameRef, errors.studentFullName)}
                                 {renderInput('passportNumber', 'Passport Number', 'text', 20, passportNumberRef, errors.passportNumber)}
                                 {renderInput('panCard', 'PAN Card', 'text', 10, panCardRef, errors.panCard)}
                                 {renderInput('aadharCard', 'Aadhar Card', 'number', 12, aadharCardRef, errors.aadharCard)}
@@ -623,7 +620,7 @@ const EducationLoan_Index = () => {
                                 {renderInput('booksEquipment', 'Books & equipment', 'text', 10, booksEquipmentRef, errors.booksEquipment, true)}
 
                                 {/* Derived/Total Loan Required Field */}
-                                {renderStaticField('Total loan requested', `₹${watchTotalLoanRequired}`)}
+                                  {renderInput('totalLoanRequired', 'Total loan requested (in INR)', 'text', 15, totalLoanRequiredRef, errors.totalLoanRequired)}
 
                                 {renderInput('proposedRepaymentTenure', 'Proposed repayment tenure', 'text', 10, proposedRepaymentTenureRef, errors.proposedRepaymentTenure)}
                             </div>
