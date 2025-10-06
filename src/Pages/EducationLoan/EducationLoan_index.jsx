@@ -350,34 +350,35 @@ const EducationLoan_Index = () => {
 
     // --- Main Component Render ---
     return (
-        <div className="h-[100dvh] flex flex-col md:flex-row">
-            <LoanSidebar
-                mainTitle="Borrowly"
-                subTitle="Education Loan"
-                img={leftbannerimage}
-                features={[
-                    { title: 'Study at Top Global & Indian Institutions', description: 'Finance tuition, living, travel, and exam fees with ease.' },
-                    { title: 'Quick Eligibility Check & Fast Sanction', description: 'Get instant approval so you don\'t miss admission deadlines.' },
-                    { title: 'Flexible Repayment Options', description: 'Repay comfortably after course completion with affordable EMIs.' },
-                ]}
-            />
+      <div className="h-[100dvh] flex flex-col md:flex-row">
+  <LoanSidebar
+    mainTitle="Borrowly"
+    subTitle="Education Loan"
+    img={leftbannerimage}
+    features={[
+      { title: 'Study at Top Global & Indian Institutions', description: 'Finance tuition, living, travel, and exam fees with ease.' },
+      { title: 'Quick Eligibility Check & Fast Sanction', description: 'Get instant approval so you don\'t miss admission deadlines.' },
+      { title: 'Flexible Repayment Options', description: 'Repay comfortably after course completion with affordable EMIs.' },
+    ]}
+    className="md:w-1/3 w-full"
+  />
 
-            <div className="p-5 md:p-10 h-full flex-1">
-                {/* Header - Contact Details (Retained) */}
-                <div className="w-full items-center justify-end hidden md:flex">
-                    <div className="flex flex-col lg:flex-row items-end gap-4 text-sm">
-                        <div className="flex items-center space-x-1">
-                            <img src={famicons_call} alt="call icon" className="w-4 h-4" />
-                            <div className="flex gap-3">
-                                <a href="tel:18003134151">+91-9494545792</a>/<a href="tel:8980685509">+91-9494545137</a>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                            <img src={iconoir_mail_solid} alt="mail icon" className="w-4 h-4" />
-                            <a href="mailto:Support@Borrowly.in">Support@Borrowly.in</a>
-                        </div>
-                    </div>
-                </div>
+  <div className="flex-1 p-5 md:p-10 flex flex-col items-center">
+    {/* Contact Header */}
+    <div className="w-full items-center justify-end hidden md:flex mb-5">
+      <div className="flex flex-col lg:flex-row items-end gap-4 text-sm">
+        <div className="flex items-center space-x-1">
+          <img src={famicons_call} alt="call icon" className="w-4 h-4" />
+          <div className="flex gap-3">
+            <a href="tel:18003134151">+91-9494545792</a>/<a href="tel:8980685509">+91-9494545137</a>
+          </div>
+        </div>
+        <div className="flex items-center space-x-1">
+          <img src={iconoir_mail_solid} alt="mail icon" className="w-4 h-4" />
+          <a href="mailto:Support@Borrowly.in">Support@Borrowly.in</a>
+        </div>
+      </div>
+    </div>
 
                 {/* Main Content Area */}
                 <div className="flex-1 h-full flex items-center justify-center">
