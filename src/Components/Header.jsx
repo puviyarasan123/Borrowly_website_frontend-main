@@ -120,7 +120,6 @@ const [isAffiliateOpen, setIsAffiliateOpen] = useState(false); // Affiliate logi
     };
   }, [isOpen]);
 
-  const togglefunction=()=> setisOpen(false);
 
   const msg = 'Get 15% off on loan processing charges when you apply through Borrowly. Use code: FREEDOM15 | Valid till 31st August';
 
@@ -131,6 +130,18 @@ const [isAffiliateOpen, setIsAffiliateOpen] = useState(false); // Affiliate logi
     setExpandedSection(null);
     setOpenDropdown(null);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+
+    if (params.get("login") === "true") {
+      setisOpen(true);
+    }
+
+    if (params.get("affiliate") === "true") {
+      setIsAffiliateOpen(true);
+    }
+  }, [location]);
 
   return (
     <>
@@ -174,21 +185,21 @@ const [isAffiliateOpen, setIsAffiliateOpen] = useState(false); // Affiliate logi
             </div>
           </div>
          <div className='pl-5'>
-  <button 
-    onClick={() => setisOpen(true)} 
-    className='border cursor-pointer hover:bg-[#0156C7] hover:text-white border-[#0156C7] text-[#0156C7] text-sm py-1 px-4 rounded-sm'
-  >
-    Sign In
-  </button>
-</div>
-<div className='pl-2'>
-  <button 
-    onClick={() => setIsAffiliateOpen(true)} 
-    className='border cursor-pointer hover:bg-[#0156C7] hover:text-white border-[#0156C7] text-[#0156C7] text-sm py-1 px-4 rounded-sm'
-  >
-    Affiliate Login
-  </button>
-</div>
+          <button 
+            onClick={() => setisOpen(true)} 
+            className='border cursor-pointer hover:bg-[#0156C7] hover:text-white border-[#0156C7] text-[#0156C7] text-sm py-1 px-4 rounded-sm'
+          >
+            Sign In
+          </button>
+        </div>
+        <div className='pl-2'>
+          <button 
+            onClick={() => setIsAffiliateOpen(true)} 
+            className='border cursor-pointer hover:bg-[#0156C7] hover:text-white border-[#0156C7] text-[#0156C7] text-sm py-1 px-4 rounded-sm'
+          >
+            Affiliate Login
+          </button>
+        </div>
 
         </div>
 
@@ -351,20 +362,20 @@ const [isAffiliateOpen, setIsAffiliateOpen] = useState(false); // Affiliate logi
                   Contact
                 </button>
                <button
-  style={{ fontFamily: 'PovetaracSansBlack' }}
-  className="flex-1 py-2.5 rounded-lg w-full border border-[#CCCCCC] text-[16px]"
-  onClick={() => { setMobileOpen(false); setisOpen(true); }}
->
-  Sign In
-</button>
-<button
-  style={{ fontFamily: 'PovetaracSansBlack' }}
-  className="flex-1 py-2.5 rounded-lg w-full border border-[#CCCCCC] text-[16px]"
-  onClick={() => { setMobileOpen(false); setIsAffiliateOpen(true); }}
->
-  Affiliate Login
-</button>
-
+                  style={{ fontFamily: 'PovetaracSansBlack' }}
+                  className="flex-1 py-2.5 rounded-lg w-full border border-[#CCCCCC] text-[16px]"
+                  onClick={() => { setMobileOpen(false); setisOpen(true); }}
+                >
+                  Sign In
+                </button>
+                <button
+                  style={{ fontFamily: 'PovetaracSansBlack' }}
+                  className="flex-1 py-2.5 rounded-lg w-full border border-[#CCCCCC] text-[16px]"
+                  onClick={() => { setMobileOpen(false); setIsAffiliateOpen(true); }}
+                >
+                  Affiliate Login
+                </button>
+                
               </div>
 
             </motion.aside>

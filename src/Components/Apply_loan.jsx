@@ -4,7 +4,7 @@ import { motion } from "framer-motion"; // ✅ for animations
 import HeaderImg from "../assets/Images/applyloan.png";
 
 import {ApiBaseUrl} from '../../apiservice'
-const BASE_URL = ApiBaseUrl()
+
 
 
 const LoanFormModal = ({ isOpen, onClose, loanType }) => {
@@ -31,7 +31,7 @@ const LoanFormModal = ({ isOpen, onClose, loanType }) => {
 
       // ✅ Send request in correct DB format
       const response = await axios.post(
-        `${BASE_URL}/api/loan-applications/`,
+        `${ApiBaseUrl}/api/loan-applications/`,
         {
           full_name: formData.name,
           email_address: formData.email,

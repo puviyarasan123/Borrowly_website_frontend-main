@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useEffect } from "react";
+import React, { useState, useRef, useMemo, useEffect, use } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +8,9 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import banner from "../assets/Images/AgentBanner.avif";
 import Logo from "/Company_icon.svg";
 import IndiaIcon from '../assets/Images/IndiaIcon.svg';
+import tick_Send from '../assets/Icons/tick_Send_new.svg'
+
+import { ApiBaseUrl } from "../../apiservice";
 
 const steps = [
   { id: 1, title: "Account", subtitle: "Stage 1" },
@@ -50,7 +53,7 @@ const schema = z.object({
       { message: 'Enter a valid PAN, Aadhaar (12 digits) or Passport number' }
     ),
   doorNo: z.string().min(1, 'Enter Door / House number').max(100, 'Too long'),
-  Referred: z.string().min(1, 'Enter Referral Code ').max(100, 'Too long'),
+  referred: z.string().max(100, 'Too long').optional(),
   state: z.string().min(2, 'Enter state').max(100, 'State name too long'),
   City: z.string().min(2, 'Enter City').max(100, 'City name too long'),
   pincode: z.string().regex(pincodeRegex, 'Pincode must be 6 digits'),
@@ -68,15 +71,7 @@ const schema = z.object({
 });
 
 export default function AgentRegistrationWithSteps() {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors, isSubmitting },
-    getValues,
-    watch,
-    trigger
-  } = useForm({
+  const {register,handleSubmit,setValue,formState: { errors, isSubmitting },getValues,watch,trigger,reset} = useForm({
     resolver: zodResolver(schema),
     mode: 'onTouched',
     reValidateMode: 'onChange',
@@ -91,7 +86,7 @@ export default function AgentRegistrationWithSteps() {
       state: '',
       City: '',
       pincode: '',
-      Referred: '',
+      referred: '',
       
       panImage: null,
       aadharImage: null,
@@ -126,12 +121,18 @@ export default function AgentRegistrationWithSteps() {
   const regState = register('state');
   const regCity = register('City');
   const regPincode = register('pincode');
-  const regReferred = register('Referred');
+  const regReferred = register('referred');
 
   // watch files for previews
   const panFiles = watch("panImage");
   const aadharFiles = watch("aadharImage");
   const selfieFiles = watch("selfie");
+  const Referred = watch("referred");
+
+  const Emailfield = watch("email");
+  const Mobilefield = watch("mobile");
+
+  const [loader,setloader]=useState(false)
 
   const filePreviews = useMemo(() => {
     const makePreviews = (fileList) => {
@@ -174,7 +175,69 @@ export default function AgentRegistrationWithSteps() {
   const [activeStep, setActiveStep] = useState(1);
   const [focusedField, setFocusedField] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [signedUrls, setSignedUrls] = useState({ pan: '', aadhaar: '', selfie: '' });
+  const [generatedUserId, setGeneratedUserId] = useState(null);
 
+  useEffect(() => {
+    const callFileApi = async () => {
+      try {
+        const res = await fetch(`${ApiBaseUrl}/api/agents/upload-kyc-docs`, {
+          method: "GET",
+          headers: { "Accept": "application/json" },
+        });
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json();
+        setGeneratedUserId(data.generatedUserId);
+        setSignedUrls(data.signedUrls || {});
+      } catch (error) {
+        console.error("Error fetching KYC docs:", error);
+      }
+    };
+  
+    if (activeStep === 3) {
+      callFileApi();
+    }
+  }, [activeStep]);
+  
+  async function uploadToSignedUrl(file, uploadUrl) {
+    if (!file || !uploadUrl) {
+      throw new Error("Missing file or upload URL");
+    }
+  
+    try {
+      const res = await fetch(uploadUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type || "application/octet-stream",
+        },
+        body: file,
+      });
+  
+      const etag = res.headers.get("etag");
+  
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(`Upload failed: ${res.status} ${res.statusText} ${text}`);
+      }
+  
+      if (!etag) {
+        throw new Error("Upload completed but no ETag returned (unexpected).");
+      }
+  
+      return {
+        success: true,
+        status: res.status,
+        etag,
+      };
+    } catch (err) {
+      console.error("Upload error:", err);
+      return {
+        success: false,
+        error: err.message,
+      };
+    }
+  }
+  
   const handleDivClick = (fieldKey) => {
     setFocusedField(fieldKey);
     const el = inputRefs.current?.[fieldKey];
@@ -188,24 +251,6 @@ export default function AgentRegistrationWithSteps() {
   };
 
   const toggleShowPassword = () => setShowPassword(s => !s);
-
-  const onSubmitForm = (data) => {
-    const formData = new FormData();
-    Object.keys(data).forEach((key) => {
-      if (data[key] instanceof FileList) {
-        if (data[key].length > 0) {
-          formData.append(key, data[key][0]); 
-        }
-      } else {
-        formData.append(key, data[key]);
-      }
-    });
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-  };
-  
-
   const fullNameVal = watch('fullName');
   const emailVal = watch('email');
   const passwordVal = watch('password');
@@ -217,46 +262,219 @@ export default function AgentRegistrationWithSteps() {
     4: [],
   };
 
+
+       const handleBack = () => setActiveStep(s => Math.max(1, s - 1));
+       const [referralVerified,setreferralverified]=useState(false)
+       const [referraledby,setreferraledby]=useState(null)
+     
+       const handleVerify = async () => {
+       const code = getValues("referred")?.toUpperCase();
+
+       if (!code) {
+         alert("Please enter a referral code first!");
+         return;
+       }
+     
+       try {
+         const resp = await fetch(`${ApiBaseUrl}/api/agents/referral-codes/${code}`);
+         const data = await resp.json();
+     
+         if (resp.ok) {
+           setreferralverified(true);
+           setreferraledby(data.referrer?.name)
+         } else {
+           setreferralverified(false);
+           alert(data.message || "Invalid referral code");
+         }
+       } catch (error) {
+         console.error("Error verifying referral code:", error);
+         alert("Server error. Please try again later.");
+       }
+     };
+     
+
+      // at component top
+      const isUploadingRef = useRef(false);
+      
+      // helper to avoid repeated uploads
+      const ensureUpload = async (file, signedObj, uploadedFlagName) => {
+        // uploadedFlagName: "aadharUploaded" | "panUploaded" | "selfieUploaded"
+        const already = getValues(uploadedFlagName);
+        if (already) return; // already uploaded — skip
+      
+        if (!file) throw new Error(`No file provided for ${uploadedFlagName}`);
+        if (!signedObj || !signedObj.uploadUrl) {
+          throw new Error(`Signed URL for ${uploadedFlagName} is not available.`);
+        }
+      
+        await uploadToSignedUrl(file, signedObj.uploadUrl);
+        setValue(uploadedFlagName + "Object", signedObj.objectName); // e.g. aadharUploadedObject
+        setValue(uploadedFlagName, true);
+      };
+
+  const [loginError, setLoginError] = useState("");
   const handleNext = async () => {
-    const fields = stepFieldMap[activeStep] || [];
+    console.log("handleNext clicked, activeStep:", activeStep);
+  const fields = stepFieldMap[activeStep] || [];
+  const ok = await trigger(fields);
+  if (!ok) {
+    const firstErrorField = Object.keys(errors)[0];
+    const el = inputRefs.current?.[firstErrorField];
+    if (el && typeof el.focus === "function") el.focus();
+    return;
+  }
 
-    if (fields.length === 0) {
-      if (activeStep === steps.length) {
-        handleSubmit(onSubmitForm)();
-      } else {
-        setActiveStep(s => Math.min(s + 1, steps.length));
+  if (isUploadingRef.current) return;
+  isUploadingRef.current = true;
+
+  try {
+    if (activeStep === 1) {
+      setloader(true);
+      const emailToCheck = getValues("email");
+      const mobileToCheck = getValues("mobile");
+
+      const qs = new URLSearchParams({email: emailToCheck,mobile: mobileToCheck}).toString();
+      
+      const resp = await fetch(`${ApiBaseUrl}/api/agents/AgentExists?${qs}`, {
+        method: "GET",
+        headers: {
+          "Accept": "application/json"
+        },
+      });
+      
+      const rawText = await resp.text().catch(() => null);
+      let data;
+      try {
+        data = rawText ? JSON.parse(rawText) : null;
+      } catch (err) {
+        data = { exists: false };
       }
-      return;
+      setloader(false);
+      if (!resp.ok) {
+        
+        const msg = rawText || `HTTP ${resp.status}`;
+        throw new Error(`AgentExists failed: ${msg}`);
+      }
+
+      if (data && data.exists) {
+        setActiveStep(1);
+        setLoginError("Email or mobile number already exists.");
+        return;
+      }
+      
     }
 
-    const ok = await trigger(fields);
-    if (ok) {
-      if (activeStep === steps.length) {
-        handleSubmit(onSubmitForm)();
-      } else {
-        setActiveStep(s => Math.min(s + 1, steps.length));
-      }
-    } else {
-      const firstErrorField = Object.keys(errors)[0];
-      const el = inputRefs.current?.[firstErrorField];
-      if (el && typeof el.focus === 'function') el.focus();
+    if (activeStep === 2) {
+      setActiveStep(3);
     }
-  };
 
-  const handleBack = () => setActiveStep(s => Math.max(1, s - 1));
+    if (activeStep === 3) {
+      setloader(true);
+      // Aadhaar
+      const aadharFileVal = getValues("aadharImage");
+      let fileToUpload = null;
+      if (!aadharFileVal) throw new Error("No Aadhaar file found in the form (aadharImage).");
+      if (aadharFileVal instanceof File) fileToUpload = aadharFileVal;
+      else if (Array.isArray(aadharFileVal) && aadharFileVal.length > 0) fileToUpload = aadharFileVal[0];
+      else if (aadharFileVal && aadharFileVal[0] && aadharFileVal[0] instanceof File) fileToUpload = aadharFileVal[0];
+      else throw new Error("Unsupported aadharImage shape. Expected File or File[] in form value.");
 
-  const [referralVerified,setreferralverified]=useState(false)
+      const aadhaarSignedObj = signedUrls?.aadhaar;
+      await ensureUpload(fileToUpload, aadhaarSignedObj, "aadharUploaded");
 
-  const handleVerify = () => {
-  const code = getValues('Referred');
-    if (code === "BORROWLY2025") {
-      setreferralverified(true)
-    } 
-  };
-  
+      // PAN
+      const panFilesVal = getValues("panImage");
+      let panFileToUpload = null;
+      if (!panFilesVal) throw new Error("No PAN file found in the form (panImage).");
+      if (panFilesVal instanceof File) panFileToUpload = panFilesVal;
+      else if (Array.isArray(panFilesVal) && panFilesVal.length > 0) panFileToUpload = panFilesVal[0];
+      else if (panFilesVal && panFilesVal[0] && panFilesVal[0] instanceof File) panFileToUpload = panFilesVal[0];
+      else throw new Error("Unsupported panImage shape. Expected File or File[] in form value.");
+
+      const panSignedObj = signedUrls?.pan;
+      await ensureUpload(panFileToUpload, panSignedObj, "panUploaded");
+
+      // Selfie
+      const selfieFilesVal = getValues("selfie");
+      let selfieFileToUpload = null;
+      if (!selfieFilesVal) throw new Error("No selfie file found in the form (selfie).");
+      if (selfieFilesVal instanceof File) selfieFileToUpload = selfieFilesVal;
+      else if (Array.isArray(selfieFilesVal) && selfieFilesVal.length > 0) selfieFileToUpload = selfieFilesVal[0];
+      else if (selfieFilesVal && selfieFilesVal[0] && selfieFilesVal[0] instanceof File) selfieFileToUpload = selfieFilesVal[0];
+      else throw new Error("Unsupported selfie shape. Expected File or File[] in form value.");
+
+      const selfieSignedObj = signedUrls?.selfie;
+      await ensureUpload(selfieFileToUpload, selfieSignedObj, "selfieUploaded");
+
+      setloader(false);
+
+      // after uploads advance
+      setActiveStep((s) => Math.min(s + 1, steps.length));
+    }
+
+    // If there are other steps (1 -> just advance)
+    if (activeStep === 1) {
+      setActiveStep((s) => Math.min(s + 1, steps.length));
+    }
+
+    // If last step submit
+    if (activeStep === steps.length) {
+      handleSubmit(onSubmitForm)();
+    }
+  } catch (err) {
+    setloader(false);
+    console.error("handleNext error:", err);
+    alert(err.message || "An error occurred");
+  } finally {
+    // ALWAYS release the lock
+    isUploadingRef.current = false;
+  }
+};
+
+
+// onSubmitForm - remains largely the same but ensure it doesn't attempt any uploads
+const onSubmitForm = async (data) => {
+  try {
+    setloader(true)
+    const { aadharImage, panImage, selfie, ...rest } = data;
+
+    const finalData = { ...rest, generatedUserId, Referred };
+
+    const response = await fetch(`${ApiBaseUrl}/api/agents/AgentRegister`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(finalData),
+    });
+
+    if (!response.ok) {
+      const text = await response.text().catch(() => null);
+      throw new Error(`HTTP error! Status: ${response.status} ${text || ""}`);
+    }
+
+    const result = await response.json();
+    reset({fullName: "",email: "",mobile: "",password: "",professionType: "",GovtID: "",doorNo: "",state: "",City: "",pincode: "",Referred: ""});
+    setActiveStep(5)
+    alert("Registration successful! Please log in.");
+  } catch (error) {
+    console.error("❌ Error submitting form:", error);
+  } finally {
+    setloader(false); 
+  }
+};
 
   return (
-    <div className="flex flex-col-reverse lg:flex-row  lg:h-[100dvh] cursor-default">
+    <>
+
+    {
+      loader && <div className="fixed inset-0 flex flex-col gap-2 text-white items-center justify-center bg-black/30 z-[50]">
+        <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+        Uploading...
+      </div>
+    }
+    
+      
+      
+        <div className="flex flex-col-reverse lg:flex-row  lg:h-[100dvh] cursor-default">
       <div className="bg-gradient-to-br from-[#013F92] to-[#015FDC] pt-10 lg:w-full lg:max-w-[600px] flex items-end">
         <img src={banner} alt="agent banner" className="w-full md:h-[90%] object-contain select-none"/>
       </div>
@@ -272,7 +490,7 @@ export default function AgentRegistrationWithSteps() {
           </h1>
           <p style={{ fontFamily: "PovetaracSansBold, sans-serif" }} className="text-[#8D909A] mb-6 md:text-lg ">
             Already a Member?{" "}
-            <Link to="/" className="text-[#1E8FFE] font-medium underline-offset-2 hover:underline">
+            <Link to="/?affiliate=true" className="text-[#1E8FFE] font-medium underline-offset-2 hover:underline">
               Log In
             </Link>
           </p>
@@ -312,6 +530,7 @@ export default function AgentRegistrationWithSteps() {
                   style={{ fontFamily: "PovetaracSansBold, sans-serif" }}
                   onFocus={() => setFocusedField('fullName')}
                   onBlur={() => !getValues('fullName') && setFocusedField('')}
+                 
                   className="w-full bg-transparent outline-none text-[18px]"
                   aria-invalid={errors.fullName ? 'true' : 'false'}
                 />
@@ -334,7 +553,8 @@ export default function AgentRegistrationWithSteps() {
                   aria-label="Mobile number"
                   aria-invalid={errors.mobile ? 'true' : 'false'}
                   maxLength={10}
-                  onFocus={() => setFocusedField('mobile')}
+
+                  onFocus={() => {setFocusedField('mobile');setLoginError("")}}
                   onBlur={() => !getValues('mobile') && setFocusedField('')}
                   onInput={(e) => {
                     const el = e.currentTarget;
@@ -362,8 +582,9 @@ export default function AgentRegistrationWithSteps() {
                   ref={attachRef(regEmail, 'email')}
                   type="text"
                   style={{ fontFamily: "PovetaracSansBold, sans-serif" }}
-                  onFocus={() => setFocusedField('email')}
+                  onFocus={() => {setFocusedField('email');setLoginError("")}}
                   onBlur={() => !getValues('email') && setFocusedField('')}
+                  
                   className="w-full bg-transparent outline-none text-[18px]"
                   aria-invalid={errors.email ? 'true' : 'false'}
                 />
@@ -403,6 +624,13 @@ export default function AgentRegistrationWithSteps() {
                 </div>
               </div>
               {errors.password && <p className="text-xs text-red-600">{errors.password.message}</p>}
+
+              {/* display errors and info */}
+              {loginError && (
+                <div className="w-full bg-[#ffe4e2] border border-[#ffc8c5] rounded-lg flex items-center justify-center text-center mb-6">
+                  <p className="text-red-500 py-3 text-sm">{loginError}</p>
+                </div>
+              )}
 
               <div className="flex justify-end items-center mt-4">
                 <div className="flex items-end gap-2">
@@ -678,7 +906,7 @@ export default function AgentRegistrationWithSteps() {
                 </button>
 
         <button
-          type="submit"
+          type="button"
           onClick={handleNext}
           className="flex cursor-pointer p-2 items-center bg-[#1E8FFE] rounded-full text-white font-medium"
         >
@@ -726,11 +954,11 @@ export default function AgentRegistrationWithSteps() {
             </div>
 
             {
-              referralVerified == true && <p className="text-xs mt-2 text-green-600">Referred by Kiran kumar</p>
+              referralVerified == true && <p className="text-xs mt-2 text-green-600">Referred by {referraledby}</p>
             }
             
-            {errors.Referred && (
-              <p className="text-xs mt-2 text-red-600">{errors.Referred.message}</p>
+            {errors.referred && (
+              <p className="text-xs mt-2 text-red-600">{errors.referred.message}</p>
             )}
             
 
@@ -773,8 +1001,28 @@ export default function AgentRegistrationWithSteps() {
             </form>
           )}
 
+
+          {
+            activeStep > steps.length && (
+              <div className="mt-10 text-center mx-auto w-full max-w-[400px]">
+                <img src={tick_Send} alt="success" className="w-20 h-20 mx-auto mb-4"/>
+                <h2 className="text-2xl font-bold text-green-600 mb-2"> Your registration is complete!</h2>
+                <p className="text-gray-700 mb-3">Verification is in progress and may take 1–2 hours. We’ll notify you once it’s approved.</p>
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+                   <Link to="/?affiliate=true" className="inline-block text-[#1E8FFE] py-3 hover:underline hover:underline-offset-4 rounded-full font-medium transition" >
+                     Go to Login
+                   </Link>
+                   <Link to="/Support" className="inline-block text-[#1E8FFE] py-3 hover:underline hover:underline-offset-4 rounded-full font-medium transition">
+                     Contact us ?
+                   </Link>
+                </div>
+              </div>
+            )
+          }
+
         </div>
       </div>
     </div>
+    </>
   );
 }
