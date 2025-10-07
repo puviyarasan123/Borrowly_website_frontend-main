@@ -14,6 +14,7 @@ const Section_1 = ({ tag, title, description, image, loanType }) => {
     "Vehicle Loans": "/VehicleLoan_Index",
     "Education Loan": "/EducationLoan_index",
     "Insurance": "/Insurence_index",
+    "Gold Loan": "/GoldLoan_index",
   };
 
   const handleApplyLoanClick = () => {

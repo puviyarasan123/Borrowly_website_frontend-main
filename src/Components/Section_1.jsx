@@ -162,7 +162,7 @@ const Section_1 = ({ isDarkMode }) => {
      image: Gold_loan_image,
     Normal_icon: Gold_loan_icon,
     id: 4,
-    link: '/Gold_loan',
+    link: '/GoldLoan_index',
     headline: 'For Every Leap You Take, We’re Right Behind You.',
     description: `Your business deserves more than just funding — it deserves a partner. At Borrowly, our business loans are built around your goals. Whether you're expanding operations, hiring talent, or investing in equipment, we provide tailored solutions, fast approvals, and relationship-driven support that grows with you.`
   },

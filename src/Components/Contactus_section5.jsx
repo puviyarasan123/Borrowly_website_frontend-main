@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import mobileImg from "../assets/Images/mobile.png";
+import mobileImg from "../assets/Images/Blog_all.avif";
 import serviceImg from "../assets/Images/service.png";
 
 const container = {

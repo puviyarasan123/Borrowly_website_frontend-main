@@ -34,6 +34,15 @@ import HomeLoan_Index from './Pages/HomeLoan/HomeLoan_index'
 import Insurence_Index from './Pages/InsurenceLoan/Insurence_index'
 import EducationLoan_index from './Pages/EducationLoan/EducationLoan_index'
 import VehicleLoan_index from './Pages/VehicleLoan/VehicleLoan_index'
+import GoldLoan_index from './Pages/GoldLoan/GoldLoan_index'
+
+
+import Financial from './Pages/Financial_dis'
+import Blog1 from './Pages/Blog1'
+import Blog2 from './Pages/Blog2'
+import Blog3 from './Pages/Blog3'
+import Blog4 from './Pages/Blog4'
+import Blog5 from './Pages/Blog5'
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -68,6 +77,13 @@ function App() {
 
         <Route path="/Tools/personal-loan-emi-calculator" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} /> <PersonalLoanEmi isDarkMode={isDarkMode} /></>} />
         <Route path="/Tools/emi-calculator-for-car-loans" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} /> <CarLoanEmi isDarkMode={isDarkMode} /></>} />
+
+        <Route path="/blogs/financial-discipline" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} /> <Financial isDarkMode={isDarkMode} /></>} />
+        <Route path="/blogs/blog-1" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} /> <Blog1 isDarkMode={isDarkMode} /></>} />
+        <Route path="/blogs/blog-2" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} /> <Blog2 isDarkMode={isDarkMode} /></>} />
+        <Route path="/blogs/blog-3" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} /> <Blog3 isDarkMode={isDarkMode} /></>} />
+        <Route path="/blogs/blog-4" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} /> <Blog4 isDarkMode={isDarkMode} /></>} />
+        <Route path="/blogs/blog-5" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} /> <Blog5 isDarkMode={isDarkMode} /></>} />
         
         <Route path="/Contact_us" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode}/><Re_contactus isDarkMode={isDarkMode}/></>} />
         <Route path="/Carriers" element={<><Header toggleTheme={toggleTheme} isDarkMode={isDarkMode}/><Carriers isDarkMode={isDarkMode}/></>} />
@@ -81,6 +97,7 @@ function App() {
         <Route path="/Insurence_Index" element={ <><Insurence_Index/></>}/>
         <Route path="/EducationLoan_Index" element={ <><EducationLoan_index/></>}/>
         <Route path="/VehicleLoan_Index" element={ <><VehicleLoan_index/></>}/>
+        <Route path="/GoldLoan_Index" element={ <><GoldLoan_index/></>}/>
       </Routes>
     </Router>
   )
